@@ -173,6 +173,7 @@ function breakTree($tree, $qcutoff, $ncutoff)
     } 
 }
 
+// THIS IS THE FUCTION YOU SHOULD USE.  YOU CAN IGNORE THE REST
 function mineGrades($numberCorrect, $noisethreshold, $key, $answers)
 {
     $graded = array();
