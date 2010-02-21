@@ -70,10 +70,10 @@ public class MinedTree {
         
         // if there was a question incisive enough, recurse
         if (bestQuestion != -1) {
-            System.out.println("Make right");
+            //System.out.println("Make right");
             right = new MinedTree(threshold, correct, key, 
                     findAnswers(bestQuestion, true), bestQuestion);
-            System.out.println("Make wrong");
+            //System.out.println("Make wrong");
             wrong = new MinedTree(threshold, correct, key, 
                     findAnswers(bestQuestion, false), bestQuestion);
         }
@@ -91,7 +91,7 @@ public class MinedTree {
         else 
             entropy = 0;
 
-        System.out.println("p_good (" + p_good + ")  p_bad (" + p_bad +")" + "  entropy (" + entropy + ")");
+        //System.out.println("p_good (" + p_good + ")  p_bad (" + p_bad +")" + "  entropy (" + entropy + ")");
 
         return entropy;
     }
@@ -104,10 +104,10 @@ public class MinedTree {
 
         double splitEntropy = (right.size() * findEntropy(right) + wrong.size() * findEntropy(wrong)) / ((double)students.size());
 
-        System.out.println("question " + question);
-        System.out.println("ce " + classEntropy + " se " + splitEntropy);
-        System.out.println("se " + right.size() + " ws " + wrong.size());
-        System.out.println("correct " + correct);
+        //System.out.println("question " + question);
+        //System.out.println("ce " + classEntropy + " se " + splitEntropy);
+        //System.out.println("se " + right.size() + " ws " + wrong.size());
+        //System.out.println("correct " + correct);
         return classEntropy - splitEntropy;
     }
 
