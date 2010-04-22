@@ -83,8 +83,9 @@ class GradeDecisionTreeInternal extends GradeDecisionTree
         $goodp = (int) (100*$good / $total);
         $badp = (int) (100*$bad / $total);
         $rw = $this->gotitright ? "right" : "wrong";
+        $q = $this->question + 1;
         return <<<EOT
-They got $this->question $rw
+They got $q $rw
 
 $total students total
 $good students passed ($goodp%)
@@ -105,8 +106,8 @@ function entropy($results, $bar)
         }
     }
 
-    if ($good > 0) $good = $good / count($results);
-    if ($bad > 0) $bad = $bad / count($results);
+    if ($good > 0) $good = $good / ((float) count($results));
+    if ($bad > 0) $bad = $bad / ((float) count($results));
 
     if ($good > 0 && $bad > 0)
         return -1 * ($good * log($good, 2.0) + $bad * log($bad, 2.0));
@@ -181,7 +182,7 @@ function mineGrades($numberCorrect, $noisethreshold, $key, $answers)
     foreach ($answers as $test) {
         $response = array();
         for ($i = 0; $i < $numq; $i++) {
-            $response[] = ( ($test[$i] == $key[$i]) ? 1 : 0 );
+            $response[] = ( (strcmp($test[$i], $key[$i]) == 0) ? 1 : 0 );
         }
         $graded[] = $response;
     }
@@ -193,6 +194,7 @@ function mineGrades($numberCorrect, $noisethreshold, $key, $answers)
 }
 
 // All of this commented-out code is test code.
+
 /*
 $t = mineGrades(2, .5, 
         array('a', 'b', 'c'), 
@@ -206,16 +208,17 @@ $t = mineGrades(2, .5,
                 array('d', 'b', 'c')));
 print($t->message() . "\n");
 
-$file = fopen('samplein', "r");
+$file = fopen('/home/peter/research/dmcalc/103', "r");
 $key = str_split(trim(fgets($file)));
 $sdata = array();
 while (!feof($file)) {
     $sdata[] = str_split(trim(fgets($file)));
 }
 
-$t = mineGrades(10, .001, $key, $sdata);
+$t = mineGrades(10, .2, $key, $sdata);
 print($t->message() . "\n");
 $t->printout(0);
 */
+
 
 ?>

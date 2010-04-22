@@ -16,6 +16,7 @@ public class MinedTree {
     Collection<String[]> students;
     
     public int numGood, numBad;
+    /** The "question" is indexed from 0.  It should probably be reported starting at 1, though. */
     public int question=-1;
     public MinedTree right=null, wrong=null;
     
@@ -54,7 +55,6 @@ public class MinedTree {
         this.students = students;
         this.question = question;
         
-        
         numGood = count(true, students);
         numBad = count(false, students);
             
@@ -65,6 +65,7 @@ public class MinedTree {
             double quality = splitQuality(i);
             if (quality >= threshold && quality > bestQuality) {
                 bestQuestion = i;
+                bestQuality = quality;
             }
         }
         
@@ -99,9 +100,9 @@ public class MinedTree {
     double splitQuality(int question)
     {
         double classEntropy = findEntropy(students);
-        Collection<String[]> right = findAnswers(question, true);
-        Collection<String[]> wrong = findAnswers(question, false);
 
+        Collection<String[]> right = findAnswers(question, true, students);
+        Collection<String[]> wrong = findAnswers(question, false, students);
         double splitEntropy = (right.size() * findEntropy(right) + wrong.size() * findEntropy(wrong)) / ((double)students.size());
 
         //System.out.println("question " + question);
@@ -111,19 +112,25 @@ public class MinedTree {
         return classEntropy - splitEntropy;
     }
 
-    int count(boolean passing, Collection<String[]> students)
+    Collection<String[]> findPassing(boolean passing, Collection<String[]> students)
     {
-        int c = 0;
+        Collection<String[]> passingstudents = new LinkedList<String[]>();
+
         for (String[] person : students) {
             int corr = 0;
             for (int i = 0; i < key.length; i++) {
                 if (person[i].equals(key[i])) corr++;
             }
 
-            if ((corr >= correct) == passing) c++;
+            if ((corr >= correct) == passing) passingstudents.add(person);
         }
 
-        return c;
+        return passingstudents;
+    }
+
+    int count(boolean passing, Collection<String[]> students)
+    {
+        return findPassing(passing, students).size();
     }
     
     Collection<String[]> findAnswers(int question, boolean right)
@@ -158,7 +165,7 @@ public class MinedTree {
     String toString(boolean gotItCorrect)
     {
         if (question == -1) throw new RuntimeException("THIS SHOULD NOT HAPPEN");
-        String thisMessage = "They got question " + question + (gotItCorrect ? " right" : " wrong") + "\n ";
+        String thisMessage = "They got question " + (question+1) + (gotItCorrect ? " right" : " wrong") + "\n ";
         thisMessage += count(true, students) + "/" + students.size() + " good\n ";
         thisMessage += count(false, students) + "/" + students.size() + " bad\n";
         if (right != null && wrong != null) {
@@ -174,9 +181,7 @@ public class MinedTree {
         String[] key = new String[line.length()];
         for (int i = 0; i < key.length; i++) {
             key[i] = "" + line.charAt(i);
-            System.out.print(key[i]);
         }
-        System.out.println();
 
         Collection<String[]> answers = new LinkedList<String[]>();
         while ((line = br.readLine()) != null) {
@@ -184,12 +189,10 @@ public class MinedTree {
             String[] answer = new String[key.length];
             for (int i = 0; i < key.length; i++) {
                 answer[i] = "" + line.charAt(i);
-                System.out.print(answer[i]);
             }
-            System.out.println();
             answers.add(answer);
         }
 
-        System.out.println(new MinedTree(.2, (int)(.7 * key.length), key, answers));
+        System.out.println(new MinedTree(.2, 10, key, answers));
     }
 }
